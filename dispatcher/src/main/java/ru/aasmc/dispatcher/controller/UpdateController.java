@@ -55,13 +55,8 @@ public class UpdateController {
         setView(sendMessage);
     }
 
-    private void setView(SendMessage sendMessage) {
+    public void setView(SendMessage sendMessage) {
         telegramBot.sendAnswerMessage(sendMessage);
-    }
-
-    private void processPhotoMessage(Update update) {
-        updateProducer.produce(RabbitQueue.PHOTO_MESSAGE_UPDATE, update);
-        setFileIsReceivedView(update);
     }
 
     /**
@@ -72,6 +67,11 @@ public class UpdateController {
         var sendMessage = messageUtils.generateSendMessageWithText(update,
                 "File has been received and is being processed now.");
         setView(sendMessage);
+    }
+
+    private void processPhotoMessage(Update update) {
+        updateProducer.produce(RabbitQueue.PHOTO_MESSAGE_UPDATE, update);
+        setFileIsReceivedView(update);
     }
 
     private void processDocMessage(Update update) {
