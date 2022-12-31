@@ -1,0 +1,4 @@
+.idea
+/logs
+dispatcher/target
+dispatcher/src/main/resources
