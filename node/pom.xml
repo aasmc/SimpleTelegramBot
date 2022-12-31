@@ -57,12 +57,11 @@
             <version>2.2.2</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>ru.aasmc</groupId>-->
-<!--            <artifactId>common-jpa</artifactId>-->
-<!--            <version>1.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
-
+        <dependency>
+            <groupId>ru.aasmc</groupId>
+            <artifactId>common-jpa</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>ru.relex</groupId>-->
 <!--            <artifactId>common-utils</artifactId>-->
@@ -74,6 +73,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>
