@@ -12,3 +12,13 @@
 2022-12-31 17:48:55 DEBUG UpdateProducerImpl:21 - New message
 2022-12-31 17:50:02 DEBUG UpdateProducerImpl:21 - Cool
 2022-12-31 18:50:46 DEBUG UpdateProducerImpl:21 - Hi there
+2022-12-31 19:44:45 DEBUG UpdateProducerImpl:21 - /start
+2022-12-31 19:44:50 DEBUG UpdateProducerImpl:21 - /cancel
+2022-12-31 19:44:53 DEBUG UpdateProducerImpl:21 - /start
+2022-12-31 19:44:58 DEBUG UpdateProducerImpl:21 - /help
+2022-12-31 19:45:04 DEBUG UpdateProducerImpl:21 - /registration
+2022-12-31 19:45:08 DEBUG UpdateProducerImpl:21 - /cancel
+2022-12-31 19:45:11 DEBUG UpdateProducerImpl:21 - /help
+2022-12-31 19:45:13 DEBUG UpdateProducerImpl:21 - /start
+2022-12-31 19:45:16 DEBUG UpdateProducerImpl:21 - /help
+2022-12-31 19:46:06 DEBUG UpdateProducerImpl:21 - 
