@@ -1,4 +1,4 @@
-package ru.aasmc.entity;
+package ru.aasmc.entity.enums;
 
 public enum UserState {
     BASIC_STATE,

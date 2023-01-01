@@ -2,6 +2,7 @@ package ru.aasmc.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.aasmc.entity.enums.UserState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
