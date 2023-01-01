@@ -1,4 +1,5 @@
 .idea
 /logs
 dispatcher/target
-dispatcher/src/main/resources
+dispatcher/src/main/resources/application.properties
+node/src/main/resources/application.properties
