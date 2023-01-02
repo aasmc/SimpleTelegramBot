@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import ru.aasmc.CryptoTool;
 import ru.aasmc.dao.AppDocumentDAO;
 import ru.aasmc.dao.AppPhotoDAO;
 import ru.aasmc.dao.BinaryContentDAO;
@@ -17,6 +18,7 @@ import ru.aasmc.entity.AppPhoto;
 import ru.aasmc.entity.BinaryContent;
 import ru.aasmc.exceptions.UploadFileException;
 import ru.aasmc.service.FileService;
+import ru.aasmc.service.enums.LinkType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,14 +35,18 @@ public class FileServiceImpl implements FileService {
     private String fileInfoUri;
     @Value("${service.file_storage.uri}")
     private String fileStorageUri;
+    @Value("${link.address}")
+    private String linkAddress;
     private final AppDocumentDAO appDocumentDAO;
     private final BinaryContentDAO binaryContentDAO;
     private final AppPhotoDAO appPhotoDAO;
+    private final CryptoTool cryptoTool;
 
-    public FileServiceImpl(AppDocumentDAO appDocumentDAO, BinaryContentDAO binaryContentDAO, AppPhotoDAO appPhotoDAO) {
+    public FileServiceImpl(AppDocumentDAO appDocumentDAO, BinaryContentDAO binaryContentDAO, AppPhotoDAO appPhotoDAO, CryptoTool cryptoTool) {
         this.appDocumentDAO = appDocumentDAO;
         this.binaryContentDAO = binaryContentDAO;
         this.appPhotoDAO = appPhotoDAO;
+        this.cryptoTool = cryptoTool;
     }
 
     @Override
@@ -71,6 +77,16 @@ public class FileServiceImpl implements FileService {
         } else {
             throw new UploadFileException("Bad response from telegram service: " + response);
         }
+    }
+
+    /**
+     * Generates a link for downloading a photo or a document by id,
+     * where id is replaced with cryptographically generated hash.
+     */
+    @Override
+    public String generateLink(Long docId, LinkType linkType) {
+        var hash = cryptoTool.hashOf(docId);
+        return "http://" + linkAddress + "/" + linkType + "?id=" + hash;
     }
 
     private AppPhoto buildTransientAppPhoto(PhotoSize telegramPhoto, BinaryContent persistentBinaryContent) {

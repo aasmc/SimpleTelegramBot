@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
+import ru.aasmc.CryptoTool;
 import ru.aasmc.dao.AppDocumentDAO;
 import ru.aasmc.dao.AppPhotoDAO;
 import ru.aasmc.entity.AppDocument;
@@ -19,23 +20,29 @@ import java.io.IOException;
 public class FileServiceImpl implements FileService {
     private final AppDocumentDAO appDocumentDAO;
     private final AppPhotoDAO appPhotoDAO;
+    private final CryptoTool cryptoTool;
 
-    public FileServiceImpl(AppDocumentDAO appDocumentDAO, AppPhotoDAO appPhotoDAO) {
+    public FileServiceImpl(AppDocumentDAO appDocumentDAO, AppPhotoDAO appPhotoDAO, CryptoTool cryptoTool) {
         this.appDocumentDAO = appDocumentDAO;
         this.appPhotoDAO = appPhotoDAO;
+        this.cryptoTool = cryptoTool;
     }
 
     @Override
     public AppDocument getDocument(String id) {
-        // TODO add decoding of hashed-string
-        var docId = Long.parseLong(id);
+        var docId = cryptoTool.idOf(id);
+        if (docId == null) {
+            return null;
+        }
         return appDocumentDAO.findById(docId).orElse(null);
     }
 
     @Override
     public AppPhoto getPhoto(String id) {
-        // TODO add decoding of hashed-string
-        var photoId = Long.parseLong(id);
+        var photoId = cryptoTool.idOf(id);
+        if (photoId == null) {
+            return null;
+        }
         return appPhotoDAO.findById(photoId).orElse(null);
     }
 

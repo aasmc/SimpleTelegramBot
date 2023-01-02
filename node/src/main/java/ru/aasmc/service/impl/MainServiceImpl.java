@@ -15,6 +15,7 @@ import ru.aasmc.exceptions.UploadFileException;
 import ru.aasmc.service.FileService;
 import ru.aasmc.service.MainService;
 import ru.aasmc.service.ProducerService;
+import ru.aasmc.service.enums.LinkType;
 import ru.aasmc.service.enums.ServiceCommands;
 
 @Log4j
@@ -71,9 +72,9 @@ public class MainServiceImpl implements MainService {
         }
         try {
             AppDocument doc = fileService.processDoc(update.getMessage());
-            // TODO add logic to save document
+            String link = fileService.generateLink(doc.getId(), LinkType.GET_DOC);
             var answer = "Document saved successfully! " +
-                    "Use link to download: http://test.ru/get-doc/777";
+                    "Use link to download: " + link;
             sendAnswer(answer, chatId);
         } catch (UploadFileException ex) {
             log.error(ex);
@@ -93,9 +94,9 @@ public class MainServiceImpl implements MainService {
         }
         try {
             AppPhoto photo = fileService.processPhoto(update.getMessage());
-            // TODO add logic to save photo
+            String link = fileService.generateLink(photo.getId(), LinkType.GET_PHOTO);
             var answer = "Photo saved successfully! " +
-                    "Use link to download: http://test.ru/get-doc/777";
+                    "Use link to download: " + link;
             sendAnswer(answer, chatId);
         } catch (UploadFileException ex) {
             log.error(ex);
