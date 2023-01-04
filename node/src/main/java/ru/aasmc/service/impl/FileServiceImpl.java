@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
-import ru.aasmc.CryptoTool;
+import ru.aasmc.utils.CryptoTool;
 import ru.aasmc.dao.AppDocumentDAO;
 import ru.aasmc.dao.AppPhotoDAO;
 import ru.aasmc.dao.BinaryContentDAO;

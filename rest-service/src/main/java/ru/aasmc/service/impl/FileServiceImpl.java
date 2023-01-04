@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
-import ru.aasmc.CryptoTool;
+import ru.aasmc.utils.CryptoTool;
 import ru.aasmc.dao.AppDocumentDAO;
 import ru.aasmc.dao.AppPhotoDAO;
 import ru.aasmc.entity.AppDocument;

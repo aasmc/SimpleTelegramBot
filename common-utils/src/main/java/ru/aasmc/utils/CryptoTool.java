@@ -1,4 +1,4 @@
-package ru.aasmc;
+package ru.aasmc.utils;
 
 import org.hashids.Hashids;
 

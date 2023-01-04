@@ -12,6 +12,7 @@ import ru.aasmc.entity.AppUser;
 import ru.aasmc.entity.RawData;
 import ru.aasmc.entity.enums.UserState;
 import ru.aasmc.exceptions.UploadFileException;
+import ru.aasmc.service.AppUserService;
 import ru.aasmc.service.FileService;
 import ru.aasmc.service.MainService;
 import ru.aasmc.service.ProducerService;
@@ -25,15 +26,19 @@ public class MainServiceImpl implements MainService {
     private final ProducerService producerService;
     private final AppUserDAO appUserDAO;
     private final FileService fileService;
+    private final AppUserService appUserService;
 
     public MainServiceImpl(
             RawDataDAO rawDataDAO,
             ProducerService producerService,
-            AppUserDAO appUserDAO, FileService fileService) {
+            AppUserDAO appUserDAO,
+            FileService fileService,
+            AppUserService appUserService) {
         this.rawDataDAO = rawDataDAO;
         this.producerService = producerService;
         this.appUserDAO = appUserDAO;
         this.fileService = fileService;
+        this.appUserService = appUserService;
     }
 
     @Override
@@ -51,7 +56,7 @@ public class MainServiceImpl implements MainService {
         } else if (UserState.BASIC_STATE.equals(userState)) {
             output = processServiceCommand(appUser, text);
         } else if (UserState.WAIT_FOR_EMAIL_STATE.equals(userState)) {
-            // TODO add processing of the email
+            output = appUserService.setEmail(appUser, text);
         } else {
             log.error("Unknown state: " + userState);
             output = "Unknown error! Please, input /cancel and try again.";
@@ -130,8 +135,7 @@ public class MainServiceImpl implements MainService {
     private String processServiceCommand(AppUser appUser, String cmd) {
         var serviceCommand = ServiceCommands.fromValue(cmd);
         if (ServiceCommands.REGISTRATION.equals(serviceCommand)) {
-            // TODO add registration
-            return "Temporarily unavailable";
+            return appUserService.registerUser(appUser);
         } else if (ServiceCommands.HELP.equals(serviceCommand)) {
             return help();
         } else if (ServiceCommands.START.equals(serviceCommand)) {
@@ -156,20 +160,18 @@ public class MainServiceImpl implements MainService {
     private AppUser findOrSaveAppUser(Update update) {
         var textMessage = update.getMessage();
         var telegramUser = textMessage.getFrom();
-        AppUser persistentAppUser = appUserDAO.findAppUserByTelegramUserId(telegramUser.getId());
-        if (persistentAppUser == null) {
+        var optionalAppUser = appUserDAO.findByTelegramUserId(telegramUser.getId());
+        return optionalAppUser.orElseGet(() -> {
             AppUser transientAppUser = AppUser.builder()
                     .telegramUserId(telegramUser.getId())
                     .username(telegramUser.getUserName())
                     .firstName(telegramUser.getFirstName())
                     .lastName(telegramUser.getLastName())
-                    // TODO change default value after adding registration logic
-                    .isActive(true)
+                    .isActive(false)
                     .state(UserState.BASIC_STATE)
                     .build();
             return appUserDAO.save(transientAppUser);
-        }
-        return persistentAppUser;
+        });
     }
 
     private void saveRawData(Update update) {
