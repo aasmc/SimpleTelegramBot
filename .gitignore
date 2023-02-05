@@ -1,6 +1,10 @@
 .idea
 /logs
-dispatcher/target
-dispatcher/src/main/resources/application.properties
-node/src/main/resources/application.properties
-mail-service/src/main/resources/application.properties.idea
+/dispatcher/target
+/dispatcher/src/main/resources/application.properties
+/node/src/main/resources/application.properties
+/node/target
+/mail-service/src/main/resources/application.properties
+*/target/*
+*/target/**
+*/application.properties
