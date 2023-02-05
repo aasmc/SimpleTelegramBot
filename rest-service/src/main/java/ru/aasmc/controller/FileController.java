@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.aasmc.service.FileService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @Log4j
 @RequestMapping("/file")
 @RestController
@@ -20,43 +23,48 @@ public class FileController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/get-doc")
-    public ResponseEntity<?> getDoc(@RequestParam("id") String id) {
+    public void getDoc(@RequestParam("id") String id, HttpServletResponse response) {
+        // TODO consider saving a document in DB in chunks not to overburden memory of the
+        // application. If the doc or photo is saved in chunks, we can retrieve them from DB
+        // in chunks as well. E.d. retrieve chunk 1, put it to the OutputStream,
+        // retrieve next chunk -> put it in the OutputStream, etc.
         var doc = fileService.getDocument(id);
         // TODO add ControllerAdvice to correctly form replies to users
         if (doc == null) {
-            return ResponseEntity.badRequest().build();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
+        response.setContentType(MediaType.parseMediaType(doc.getMimeType()).toString());
+        response.setHeader("Content-disposition", "attachment; filename=" + doc.getDocName());
+        response.setStatus(HttpServletResponse.SC_OK);
+
         var binaryContent = doc.getBinaryContent();
-        var fileSystemResources = fileService.getFileSystemResource(binaryContent);
-        if (fileSystemResources == null) {
-            return ResponseEntity.internalServerError().build();
+        try(var out = response.getOutputStream()) {
+            out.write(binaryContent.getFileAsArrayOfBytes());
+        } catch (IOException e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(doc.getMimeType()))
-                // attachment tells client to download the file, otherwise it will not be downloaded
-                // but will be opened in e.g. browser window
-                .header("Content-disposition", "attachment; filename=" + doc.getDocName())
-                .body(fileSystemResources);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/get-photo")
-    public ResponseEntity<?> getPhoto(@RequestParam("id") String id) {
+    public void getPhoto(@RequestParam("id") String id, HttpServletResponse response) {
         var photo = fileService.getPhoto(id);
         // TODO add ControllerAdvice to correctly form replies to users
         if (photo == null) {
-            return ResponseEntity.badRequest().build();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
+        response.setContentType(MediaType.IMAGE_JPEG.toString());
+        response.setHeader("Content-disposition", "attachment;");
+        response.setStatus(HttpServletResponse.SC_OK);
         var binaryContent = photo.getBinaryContent();
-        var fileSystemResources = fileService.getFileSystemResource(binaryContent);
-        if (fileSystemResources == null) {
-            return ResponseEntity.internalServerError().build();
+        try(var out = response.getOutputStream()) {
+            out.write(binaryContent.getFileAsArrayOfBytes());
+        } catch (IOException e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                // attachment tells client to download the file, otherwise it will not be downloaded
-                // but will be opened in e.g. browser window
-                .header("Content-disposition", "attachment;")
-                .body(fileSystemResources);
     }
 }
 

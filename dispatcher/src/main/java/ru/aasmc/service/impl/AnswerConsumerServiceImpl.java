@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import ru.aasmc.controller.UpdateController;
+import ru.aasmc.controller.UpdateProcessor;
 import ru.aasmc.service.AnswerConsumer;
 import ru.aasmc.RabbitQueue;
 
@@ -12,10 +12,10 @@ import ru.aasmc.RabbitQueue;
 @Log4j
 public class AnswerConsumerServiceImpl implements AnswerConsumer {
 
-    private final UpdateController updateController;
+    private final UpdateProcessor updateProcessor;
 
-    public AnswerConsumerServiceImpl(UpdateController updateController) {
-        this.updateController = updateController;
+    public AnswerConsumerServiceImpl(UpdateProcessor updateProcessor) {
+        this.updateProcessor = updateProcessor;
     }
 
     /**
@@ -25,6 +25,6 @@ public class AnswerConsumerServiceImpl implements AnswerConsumer {
     @Override
     @RabbitListener(queues = RabbitQueue.ANSWER_MESSAGE)
     public void consume(SendMessage sendMessage) {
-        updateController.setView(sendMessage);
+        updateProcessor.setView(sendMessage);
     }
 }

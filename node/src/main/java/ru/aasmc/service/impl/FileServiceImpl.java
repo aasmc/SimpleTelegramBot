@@ -42,7 +42,10 @@ public class FileServiceImpl implements FileService {
     private final AppPhotoDAO appPhotoDAO;
     private final CryptoTool cryptoTool;
 
-    public FileServiceImpl(AppDocumentDAO appDocumentDAO, BinaryContentDAO binaryContentDAO, AppPhotoDAO appPhotoDAO, CryptoTool cryptoTool) {
+    public FileServiceImpl(AppDocumentDAO appDocumentDAO,
+                           BinaryContentDAO binaryContentDAO,
+                           AppPhotoDAO appPhotoDAO,
+                           CryptoTool cryptoTool) {
         this.appDocumentDAO = appDocumentDAO;
         this.binaryContentDAO = binaryContentDAO;
         this.appPhotoDAO = appPhotoDAO;
